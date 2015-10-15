@@ -11,11 +11,25 @@
 |
 */
 
+# Users 
 $factory->define(melblaravel\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
-        'password' => bcrypt(str_random(10)),
+        'password' => bcrypt('password'),
         'remember_token' => str_random(10),
     ];
 });
+
+# Posts 
+$factory->define(melblaravel\Posts::class, function (Faker\Generator $faker) {
+    return [ 
+        'title' => $faker->unique()->name,
+        'slug' => str_slug($faker->unique()->name,'-'),
+        'user_id' => factory(melblaravel\User::class)->create()->id,
+        'extract' => $faker->sentence(2),
+        'content' => $faker->paragraph(3),
+    ];
+});
+
+

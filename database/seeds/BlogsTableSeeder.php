@@ -11,6 +11,6 @@ class BlogsTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        factory(melblaravel\Posts::class, 25)->create();
     }
 }

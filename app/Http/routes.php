@@ -20,6 +20,8 @@ Route::get('/home', function () {
     return view('pages.home');
 });
 
+Route::resource('blogs', 'PostController');
+
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');

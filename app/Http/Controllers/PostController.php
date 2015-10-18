@@ -2,6 +2,7 @@
 
 namespace melblaravel\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use melblaravel\Http\Requests;
 use melblaravel\Http\Controllers\Controller;
@@ -16,9 +17,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        $blogs = Posts::with('user')->get();
-dd($blogs->toArray());
-        return view('pages.home',compact($blogs));
+        $blogs = Posts::where('created_at', '<=', Carbon::now())
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(5);
+        
+        return view('pages.home',compact('blogs'));
     }
 
     /**

@@ -1,17 +1,18 @@
 <?php
 
-namespace melblaravel\Http\Controllers;
+namespace melblaravel\Http\Controllers\Admin;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\View;
 use melblaravel\Http\Requests;
 use melblaravel\Http\Controllers\Controller;
-use melblaravel\Posts;
 
-class PostController extends Controller
+class DashboardController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,26 +20,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $blogs = Posts::where('created_at', '<=', Carbon::now())
-                        ->orderBy('created_at', 'desc')
-                        ->paginate(5);
         
-        return view('pages.home',compact('blogs'));
-    }
-
-    public function userPosts($userid)
-    {
-        $blogs = $this->getBlogsByUserId($userid);
-        if(count($blogs) == 0 ) abort(403, 'Unauthorized action.');
-        
-        return view('pages.home',compact('blogs'));
-    }
-
-
-    public function adminPosts($userid)
-    {
-        $blogs = $this->getBlogsByUserId($userid);
-        return view('pages.admin.blog',compact('blogs'));
+        return view('dashboard.main');
     }
 
     /**
@@ -48,14 +31,7 @@ class PostController extends Controller
      */
     public function create()
     {
- 
-        if (Auth::check() ) {
-            
-            return View('pages.admin.createblog');
-            
-                // The user is logged in...
-        }
-        
+        //
     }
 
     /**
@@ -112,14 +88,5 @@ class PostController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    private function getBlogsByUserId($userid)
-    {
-        $blogs = Posts::where('user_id', '=', $userid)
-                ->orderBy('created_at', 'desc')
-                ->paginate(5);
-        if (count($blogs) == 0) abort(403, 'Unauthorized action.');
-        return $blogs;
     }
 }

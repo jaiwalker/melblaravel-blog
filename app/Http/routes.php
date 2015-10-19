@@ -11,6 +11,10 @@
 |
 */
 
+\DB::listen(function($sql) {
+    //var_dump($sql);
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -21,6 +25,9 @@ Route::get('/home', function () {
 });
 
 Route::resource('blogs', 'PostController');
+Route::resource('dashboard', 'Admin\DashboardController');
+Route::get('blogs/user/{id}', 'PostController@userPosts');
+Route::get('blogs/adminPosts/{id}', 'PostController@adminPosts');
 
 
 // Authentication routes...

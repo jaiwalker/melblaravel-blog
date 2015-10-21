@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use melblaravel\Http\Requests;
 use melblaravel\Http\Controllers\Controller;
 use melblaravel\Posts;
+use melblaravel\User;
 
 class PostController extends Controller
 {
@@ -31,14 +32,18 @@ class PostController extends Controller
         $blogs = $this->getBlogsByUserId($userid);
         if(count($blogs) == 0 ) abort(403, 'Unauthorized action.');
         
-        return view('pages.home',compact('blogs'));
+        return view('pages.userblogs',compact('blogs')+['description'=>" All Blogs by ".User::findOrfail($userid)->name]);
     }
 
 
     public function adminPosts($userid)
     {
+       //dump(Auth::check());
+        if(!Auth::check()) {return redirect('/auth/login');}
+
         $blogs = $this->getBlogsByUserId($userid);
-        return view('pages.admin.blog',compact('blogs'));
+
+        return view('pages.userblogs',compact('blogs')+['admin'=>true,'description'=>" All Blogs by ".Auth::User()->name]);
     }
 
     /**
@@ -66,7 +71,16 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'title' =>'required|unique:blogs',
+            'extract' =>'required' ,
+            'content' =>'required'
+        ]);
+         $slug = str_slug($request['title']);
+         $user_id = Auth::user()->id;
+        Posts::create($request->all() + compact('slug','user_id'));
+
+       return  redirect()->back();
     }
 
     /**
@@ -119,7 +133,6 @@ class PostController extends Controller
         $blogs = Posts::where('user_id', '=', $userid)
                 ->orderBy('created_at', 'desc')
                 ->paginate(5);
-        if (count($blogs) == 0) abort(403, 'Unauthorized action.');
         return $blogs;
     }
 }

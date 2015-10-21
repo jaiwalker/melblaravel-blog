@@ -30,4 +30,5 @@
         <button type="submit" class="btn">Register</button>
     </div>
 </form>
+@include('layouts.formErrors')
 @endsection('content')

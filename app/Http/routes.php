@@ -11,6 +11,8 @@
 |
 */
 
+use melblaravel\Http\Requests\Request;
+
 \DB::listen(function($sql) {
     //var_dump($sql);
 });
@@ -20,9 +22,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/home', function () {
-    return view('pages.home');
-});
+
 
 Route::resource('blogs', 'PostController');
 Route::resource('dashboard', 'Admin\DashboardController');

@@ -21,6 +21,8 @@ class AuthController extends Controller
     |
     */
 
+    protected $redirectTo = '/dashboard';
+
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     /**
